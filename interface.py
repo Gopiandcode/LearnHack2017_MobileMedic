@@ -1,4 +1,3 @@
-
 def inputNode():
     illness = input("Please type in Illness\n").lower()
     print(illness)
