@@ -1,1 +1,0 @@
-{"content": [{"ref": "medic/tubercolosis.json", "menuRef": "medic/drowsiness.json", "type": "menu", "header": "**Your Diagnosis**\nYou might have tubercolosis, a possible cure would be see a doctor", "content": []}, {"type": "end", "ref": "#diagnosis"}]}
