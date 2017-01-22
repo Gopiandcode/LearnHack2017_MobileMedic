@@ -1,1 +1,0 @@
-{"content": [{"menuRef": "medic/index.json", "type": "menu", "header": "** #medic menu **", "content": [{"ref": "medic/drowsiness.json", "type": "linkStatic", "description": "#Begin Diagnosis"}]}, {"type": "end", "ref": "#medic"}]}
