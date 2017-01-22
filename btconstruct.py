@@ -1,35 +1,66 @@
 import json
 from collections import Counter
 import interface
-
+root = "medic"
 class Illness:
     def __init__(self, name, symptoms, cure):
         self.name = name
         self.symptoms = symptoms
         self.cure = cure
-    def serialize(self):
-        return {
-                    "type" : "message",
-                    "header" : "** #illness result **",
-                    "description" : "You have the illness {}, the cure is {}".format(self.name, self.cure)
-                }
+
+    def serialize(self, parent):
+        content = {
+            "ref": root + "/" + self.name + ".json",
+            "menuRef" : parent,
+            "type": "menu",
+            "header": "**Your Diagnosis**\nYou might have " + self.name + ", a possible cure would be " + self.cure,
+            "content": []
+        }
+        end = {
+            "type": "end",
+            "ref": "#diagnosis"
+        }
+        output = {"content": [content, end]}
+        output_name = root + "/" + self.name + ".json"
+        with open("./" + output_name, 'w') as file:
+            json.dump(output, file)
+
+        return output_name
+
 
 class Question:
     def __init__(self, symptom, left, right):
         self.symptom = symptom
         self.true = right
         self.false = left
-    def serialize(self):
-        return {
-            "type": "input",
-            "header": "** #Symptom **",
-            "content": {
-                "type": "string",
-                "description": "Do you have the symptom {}?".format(self.symptom),
-                # TODO Add CORRECT SYSTAX FOR TRUE AND FALSE
-                "no": self.false.serialize(),
-                "yes": self.true.serialize()
-        }}
+
+    def serialize(self, path=None):
+        output_name = root + "/" + self.symptom + ".json"
+        left = {
+            "ref": self.true.serialize(output_name),
+            "type": "linkStatic",
+            "description": "yes"
+            }
+        right = {
+            "ref": self.false.serialize(output_name),
+            "type": "linkStatic",
+            "description": "no"
+            }
+        content = {
+            "type": "menu",
+            "header": "Do you have the symptom {}?".format(self.symptom),
+            "content": [left, right]
+        }
+        end = {
+            "type": "end",
+            "ref": "#diagnosis"
+        }
+        if path is not None:
+            content["menuRef"] = path
+        output = {"content":[content, end]}
+        with open("./" + output_name, 'w') as file:
+            json.dump(output, file)
+        return output_name
 
 
 class Tree:
@@ -77,15 +108,42 @@ class Tree:
         self.root = question_consumer(symptoms_list, self.illnesses)
 
     def serialize(self):
-        return json.dumps(self.root.serialize())
+        return self.root.serialize()
 def getIllness():
     illness_name, symptoms, cure = interface.inputNode()
     return Illness(illness_name, symptoms, cure)
 
+def serializeTree(tree):
+    parent_ref = tree.serialize()
+    print(parent_ref)
+    begin = {
+        "ref" : parent_ref,
+        "type" : "linkStatic",
+        "description" : "#Begin Diagnosis"
+    }
+    content = {
+        "menuRef" : root + "/index.json",
+        "type" : "menu",
+        "header" : "** #medic menu **",
+        "content" : [begin]
+    }
+    end = {
+        "type": "end",
+        "ref": "#medic"
+    }
+    output = {"content" : [content, end]}
+    output_file = "./" + root + "/index.json"
+    with open(output_file, 'w') as file:
+        json.dump(output, file)
+    return
+
+
 
 if __name__ == '__main__':
     decision_tree = Tree()
-    for i in range(2):
+    get_data = True
+    while get_data:
         decision_tree.add_illness(getIllness())
+        get_data = input("Enter more data?(y/n):") == "y"
     decision_tree.balance_tree();
-    print(decision_tree.serialize())
+    serializeTree(decision_tree)

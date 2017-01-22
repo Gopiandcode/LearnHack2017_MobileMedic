@@ -1,0 +1,1 @@
+{"content": [{"ref": "medic/fever.json", "menuRef": "medic/drowsiness.json", "type": "menu", "header": "**Your Diagnosis**\nYou might have fever, a possible cure would be sleep", "content": []}, {"type": "end", "ref": "#diagnosis"}]}
