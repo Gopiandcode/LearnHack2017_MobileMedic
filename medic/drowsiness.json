@@ -1,1 +1,0 @@
-{"content": [{"type": "menu", "header": "Do you have the symptom drowsiness?", "content": [{"ref": "medic/fever.json", "type": "linkStatic", "description": "yes"}, {"ref": "medic/tubercolosis.json", "type": "linkStatic", "description": "no"}]}, {"type": "end", "ref": "#diagnosis"}]}
